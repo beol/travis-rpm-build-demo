@@ -7,5 +7,5 @@ services:
 before_install:
     - sudo docker pull centos:centos${OS_VERSION}
 script:
-    - sudo docker run --rm=true -v `pwd`:/code:rw centos:centos6 /bin/cat /etc/redhat-release
+    - sudo docker run --rm=true -v `pwd`:/code:rw centos:centos6 /bin/bash git.sh
 
