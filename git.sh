@@ -1,4 +1,4 @@
-#!/bin/bash -e -v
+#!/bin/bash
 
 yum -y install rpm-build zlib-devel openssl-devel curl-devel expat-deve gettext gcc
 
