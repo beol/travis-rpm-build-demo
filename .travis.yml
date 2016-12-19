@@ -8,5 +8,5 @@ before_install:
     - sudo apt-get update
     - sudo docker pull centos:centos${OS_VERSION}
 script:
-    - sudo docker run --rm=true -v `pwd`:/code:rw centos:centos6 /bin/bash cat /etc/redhat-release
+    - sudo docker run --rm=true -v `pwd`:/code:rw centos:centos6 /bin/bash -c cat /etc/redhat-release
 
