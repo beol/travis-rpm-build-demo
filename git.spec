@@ -82,7 +82,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f bin-man-doc-files
 %defattr(-,root,root)
-%{_datadir}/git-core/
 %doc README.md COPYING Documentation/*.txt
 %{!?_without_docs: %doc Documentation/*.html Documentation/howto}
 %{!?_without_docs: %doc Documentation/technical}
