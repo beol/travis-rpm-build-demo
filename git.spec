@@ -61,6 +61,15 @@ find $RPM_BUILD_ROOT -type f -name .packlist -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -type f -name '*.bs' -empty -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -type f -name perllocal.pod -exec rm -f {} ';'
 
+(find $RPM_BUILD_ROOT%{_bindir} -type f | sed -e s@^$RPM_BUILD_ROOT@@)               > bin-man-doc-files
+(find $RPM_BUILD_ROOT%{_libexecdir}/git-core -type f  | sed -e s@^$RPM_BUILD_ROOT@@) >> bin-man-doc-files
+(find $RPM_BUILD_ROOT%{_datadir}/git-core -type f  | sed -e s@^$RPM_BUILD_ROOT@@)    >> bin-man-doc-files
+(find $RPM_BUILD_ROOT%{perl_vendorlib} -type f | sed -e s@^$RPM_BUILD_ROOT@@)        >> perl-files
+%if %{!?_without_docs:1}0
+(find $RPM_BUILD_ROOT%{_mandir} $RPM_BUILD_ROOT/Documentation -type f | sed -e s@^$RPM_BUILD_ROOT@@ -e 's/$/*/' ) >> bin-man-doc-files
+%else
+rm -rf $RPM_BUILD_ROOT%{_mandir}
+%endif
 rm -rf $RPM_BUILD_ROOT%{_datadir}/gitweb
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/bash_completion.d
@@ -73,16 +82,6 @@ pathmunge %{_bindir} after
 source %{_sysconfdir}/bash_completion.d/git
 EOF
 
-(find $RPM_BUILD_ROOT%{_bindir} -type f | sed -e s@^$RPM_BUILD_ROOT@@)               > bin-man-doc-files
-(find $RPM_BUILD_ROOT%{_libexecdir}/git-core -type f  | sed -e s@^$RPM_BUILD_ROOT@@) >> bin-man-doc-files
-(find $RPM_BUILD_ROOT%{_datadir}/git-core -type f  | sed -e s@^$RPM_BUILD_ROOT@@)    >> bin-man-doc-files
-(find $RPM_BUILD_ROOT%{_sysconfdir} -type f  | sed -e s@^$RPM_BUILD_ROOT@@)          >> bin-man-doc-files
-(find $RPM_BUILD_ROOT%{perl_vendorlib} -type f | sed -e s@^$RPM_BUILD_ROOT@@)        >> perl-files
-%if %{!?_without_docs:1}0
-(find $RPM_BUILD_ROOT%{_mandir} $RPM_BUILD_ROOT/Documentation -type f | sed -e s@^$RPM_BUILD_ROOT@@ -e 's/$/*/' ) >> bin-man-doc-files
-%else
-rm -rf $RPM_BUILD_ROOT%{_mandir}
-%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -92,6 +91,8 @@ rm -rf $RPM_BUILD_ROOT
 %doc README.md COPYING Documentation/*.txt
 %{!?_without_docs: %doc Documentation/*.html Documentation/howto}
 %{!?_without_docs: %doc Documentation/technical}
+%{_sysconfdir}/bash_completion.d/git
+%{_sysconfdir}/profile.d/git.sh
 
 %files -n perl-Git -f perl-files
 %defattr(-,root,root)
