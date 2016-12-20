@@ -11,6 +11,6 @@ before_install:
     - sudo docker pull centos:centos${OS_VERSION}
 script:
     - sudo docker run --rm=true -v `pwd`:${BASE_DIR}:rw centos:centos${OS_VERSION} /bin/bash -e -v ${BASE_DIR}/build.sh
-    - package_cloud push laksmana/centos/os/version rpmbuild/RPMS/x86_64/git-2.11.0-1.el6.x86_64.rpm
-    - package_cloud push laksmana/centos/os/version rpmbuild/RPMS/x86_64/perl-Git-2.11.0-1.el6.x86_64.rpm
+    - package_cloud push laksmana/centos/el/6 rpmbuild/RPMS/x86_64/git-2.11.0-1.el6.x86_64.rpm
+    - package_cloud push laksmana/centos/el/6 rpmbuild/RPMS/x86_64/perl-Git-2.11.0-1.el6.x86_64.rpm
 
