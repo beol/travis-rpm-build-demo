@@ -50,17 +50,15 @@ Perl interface to Git
 %setup -q
 
 %build
-./configure --prefix=/opt/git && \
+./configure --prefix=/opt/git --without-expat --without-tcltk --without-python && \
 make %{_smp_mflags} CFLAGS="$RPM_OPT_FLAGS" \
      NO_GETTEXT=YesPlease \
-     NO_EXPAT=YesPlease \
-     NO_TCLTK=YesPlease \
-     NO_PYTHON=YesPlease \
      all %{!?_without_docs: doc}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 make %{_smp_mflags} CFLAGS="$RPM_OPT_FLAGS" DESTDIR=$RPM_BUILD_ROOT \
+     NO_GETTEXT=YesPlease \
      INSTALLDIRS=vendor install %{!?_without_docs: install-doc}
 find $RPM_BUILD_ROOT -type f -name .packlist -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -type f -name '*.bs' -empty -exec rm -f {} ';'
