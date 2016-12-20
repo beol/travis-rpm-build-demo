@@ -5,7 +5,8 @@ yum -y install gcc \
     zlib-devel \
     openssl-devel \
     curl-devel \
-    perl-ExtUtils-MakeMaker
+    perl-ExtUtils-MakeMaker \
+    perl-Error
 
 mkdir -p /code/rpmbuild/{SPECS,SOURCES,BUILD,RPMS,SRPMS,BUILDROOT}
 
