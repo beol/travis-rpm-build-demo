@@ -50,20 +50,18 @@ Perl interface to Git
 %setup -q
 
 %build
-./configure --prefix=/opt/git \
-            --without-expat \
-            --without-tcltk \
-            --without-python
+./configure --prefix=/opt/git && \
 make %{_smp_mflags} CFLAGS="$RPM_OPT_FLAGS" \
-     %{path_settings} \
+     NO_GETTEXT=YesPlease \
+     NO_EXPAT=YesPlease \
+     NO_TCLTK=YesPlease \
+     NO_PYTHON=YesPlease \
      all %{!?_without_docs: doc}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 make %{_smp_mflags} CFLAGS="$RPM_OPT_FLAGS" DESTDIR=$RPM_BUILD_ROOT \
-     %{path_settings} \
      INSTALLDIRS=vendor install %{!?_without_docs: install-doc}
-test ! -d $RPM_BUILD_ROOT%{python_sitelib} || rm -fr $RPM_BUILD_ROOT%{python_sitelib}
 find $RPM_BUILD_ROOT -type f -name .packlist -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -type f -name '*.bs' -empty -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -type f -name perllocal.pod -exec rm -f {} ';'
