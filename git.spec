@@ -1,6 +1,7 @@
 # Pass --without docs to rpmbuild if you don't want the documentation
 %global _without_docs 1
 %global debug_package %{nil}
+%global _exec_prefix /opt/git
 
 Name: 		git
 Version: 	2.11.0
@@ -10,11 +11,11 @@ License: 	GPL
 Group: 		Development/Tools
 URL: 		http://kernel.org/pub/software/scm/git/
 Source: 	http://kernel.org/pub/software/scm/git/%{name}-%{version}.tar.gz
-BuildRequires:	zlib-devel, openssl-devel, curl-devel  %{!?_without_docs:, xmlto, asciidoc > 6.0.3}
+BuildRequires:	zlib-devel >= 1.2, openssl-devel, curl-devel  %{!?_without_docs:, xmlto, asciidoc > 6.0.3}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	perl-Git = %{version}-%{release}
-Requires:	zlib, rsync, less, openssh-clients, expat
+Requires:	zlib >= 1.2, rsync, less, openssh-clients
 Provides:	git-core = %{version}-%{release}
 Obsoletes:	git-core <= 1.5.4.2
 Obsoletes:	git-p4
@@ -23,17 +24,6 @@ Obsoletes:	git-p4
 Git is a fast, scalable, distributed revision control system with an
 unusually rich command set that provides both high-level operations
 and full access to internals.
-
-The git rpm installs the core tools with minimal dependencies.  To
-install all git packages, including tools for integrating with other
-SCMs, install the git-all meta-package.
-
-%package svn
-Summary:        Git tools for importing Subversion repositories
-Group:          Development/Tools
-Requires:       git = %{version}-%{release}, subversion
-%description svn
-Git tools for importing Subversion repositories.
 
 %package -n perl-Git
 Summary:        Perl interface to Git
@@ -50,32 +40,49 @@ Perl interface to Git
 %setup -q
 
 %build
-./configure --prefix=/opt/git --without-expat --without-tcltk --without-python && \
 make %{_smp_mflags} CFLAGS="$RPM_OPT_FLAGS" \
-     NO_GETTEXT=YesPlease \
-     all %{!?_without_docs: doc}
+     configure
+./configure --prefix=%{_prefix} \
+            --exec_prefix=%{_exec_prefix} \
+            --without-expat \
+            --without-tcltk \
+            --without-python
+make %{_smp_mflags} CFLAGS="$RPM_OPT_FLAGS" \
+     all %{!?_without_docs: doc} \
+     NO_GETTEXT=YesPlease
 
 %install
 rm -rf $RPM_BUILD_ROOT
 make %{_smp_mflags} CFLAGS="$RPM_OPT_FLAGS" DESTDIR=$RPM_BUILD_ROOT \
-     NO_GETTEXT=YesPlease \
-     INSTALLDIRS=vendor install %{!?_without_docs: install-doc}
+     INSTALLDIRS=vendor install %{!?_without_docs: install-doc} \
+     NO_GETTEXT=YesPlease
+
 find $RPM_BUILD_ROOT -type f -name .packlist -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -type f -name '*.bs' -empty -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -type f -name perllocal.pod -exec rm -f {} ';'
 
-(find $RPM_BUILD_ROOT%{_bindir} -type f | grep -vE "archimport|svn|cvs|email|gitk|git-gui|git-citool" | sed -e s@^$RPM_BUILD_ROOT@@)               > bin-man-doc-files
-(find $RPM_BUILD_ROOT%{_libexecdir}/git-core -type f | grep -vE "archimport|svn|cvs|email|gitk|git-gui|git-citool" | sed -e s@^$RPM_BUILD_ROOT@@)               >> bin-man-doc-files
-(find $RPM_BUILD_ROOT%{perl_vendorlib} -type f | sed -e s@^$RPM_BUILD_ROOT@@) >> perl-files
-%if %{!?_without_docs:1}0
-(find $RPM_BUILD_ROOT%{_mandir} $RPM_BUILD_ROOT/Documentation -type f | grep -vE "archimport|svn|git-cvs|email|gitk|git-gui|git-citool" | sed -e s@^$RPM_BUILD_ROOT@@ -e 's/$/*/' ) >> bin-man-doc-files
-%else
-rm -rf $RPM_BUILD_ROOT%{_mandir}
-%endif
-rm -rf $RPM_BUILD_ROOT%{_datadir}/locale
+rm -rf $RPM_BUILD_ROOT%{_datadir}/gitweb
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/bash_completion.d
 install -m 644 -T contrib/completion/git-completion.bash $RPM_BUILD_ROOT%{_sysconfdir}/bash_completion.d/git
+
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/profile.d
+cat -<<EOF >$RPM_BUILD_ROOT%{_sysconfdir}/profile.d/git.sh
+pathmunge %{_bindir} after
+
+source %{_sysconfdir}/bash_completion.d/git
+EOF
+
+(find $RPM_BUILD_ROOT%{_bindir} -type f | sed -e s@^$RPM_BUILD_ROOT@@)               > bin-man-doc-files
+(find $RPM_BUILD_ROOT%{_libexecdir}/git-core -type f  | sed -e s@^$RPM_BUILD_ROOT@@) >> bin-man-doc-files
+(find $RPM_BUILD_ROOT%{_datadir}/git-core -type f  | sed -e s@^$RPM_BUILD_ROOT@@)    >> bin-man-doc-files
+(find $RPM_BUILD_ROOT%{_sysconfdir} -type f  | sed -e s@^$RPM_BUILD_ROOT@@)          >> bin-man-doc-files
+(find $RPM_BUILD_ROOT%{perl_vendorlib} -type f | sed -e s@^$RPM_BUILD_ROOT@@)        >> perl-files
+%if %{!?_without_docs:1}0
+(find $RPM_BUILD_ROOT%{_mandir} $RPM_BUILD_ROOT/Documentation -type f | sed -e s@^$RPM_BUILD_ROOT@@ -e 's/$/*/' ) >> bin-man-doc-files
+%else
+rm -rf $RPM_BUILD_ROOT%{_mandir}
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -85,14 +92,6 @@ rm -rf $RPM_BUILD_ROOT
 %doc README.md COPYING Documentation/*.txt
 %{!?_without_docs: %doc Documentation/*.html Documentation/howto}
 %{!?_without_docs: %doc Documentation/technical}
-%{_sysconfdir}/bash_completion.d
-
-%files svn
-%defattr(-,root,root)
-%{_libexecdir}/git-core/*svn*
-%doc Documentation/*svn*.txt
-%{!?_without_docs: %{_mandir}/man1/*svn*.1*}
-%{!?_without_docs: %doc Documentation/*svn*.html }
 
 %files -n perl-Git -f perl-files
 %defattr(-,root,root)
