@@ -18,6 +18,6 @@ curl -s -L -o $BASE_DIR/rpmbuild/SOURCES/git-$VERSION.tar.gz http://kernel.org/p
 
 rpmbuild -bb --define 'debug_package %{nil}' --define "_topdir ${BASE_DIR}/rpmbuild" --without docs $BASE_DIR/git.spec
 
-yum localinstall -y $BASE_DIR/rpmbuild/RPMS/x86_64/git-$VERSION-*.rpm $BASE_DIR/rpmbuild/RPMS/x86_64/perl-Git-$VERSION-*.rpm
+yum localinstall -y $BASE_DIR/rpmbuild/RPMS/x86_64/*.rpm
 
 /opt/git/bin/git --version
