@@ -4,7 +4,7 @@
 
 Name: 		%{_name}211
 Version: 	2.11.0
-Release: 	0%{?dist}
+Release: 	0a%{?dist}
 Summary:  	Core git tools
 License: 	GPL
 Group: 		Development/Tools
@@ -14,6 +14,9 @@ BuildRequires:	zlib-devel >= 1.2, openssl-devel, curl-devel  %{!?_without_docs:,
 BuildRoot:	%{_tmppath}/%{_name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	zlib >= 1.2, rsync, less, openssh-clients
+Requires(post):	/usr/sbin/update-alternatives
+Requires(preun):	/usr/sbin/update-alternatives
+
 Provides:	git-core = %{version}-%{release}
 Obsoletes:	git-core <= 1.5.4.2
 Obsoletes:	git-p4
@@ -58,6 +61,14 @@ install -m 644 -t $RPM_BUILD_ROOT%{_datadir}/git-core/contrib contrib/completion
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%post
+/usr/sbin/update-alternatives --install /usr/local/bin/git git /opt/git/bin/git 10
+
+%preun
+if [ $1 = 0 ]; then
+	/usr/sbin/update-alternatives --remove git /opt/git/bin/git
+fi
 
 %files
 %defattr(-,root,root)
