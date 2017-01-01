@@ -1,15 +1,16 @@
 sudo: required
+language: ruby
+rvm:
+    - 2.3.1
 env:
     matrix:
         - OS_TYPE=centos OS_VERSION=6
     global:
         - BASE_DIR=/code
 services:
-  - docker
+    - docker
 before_install:
-    - gem install package_cloud
     - sudo docker pull centos:centos${OS_VERSION}
 script:
     - sudo docker run --rm=true -v `pwd`:${BASE_DIR}:rw centos:centos${OS_VERSION} /bin/bash -e -v ${BASE_DIR}/build.sh
-    - package_cloud push laksmana/centos/el/6 rpmbuild/RPMS/x86_64/git211-2.11.0-0a.el6.x86_64.rpm
 
