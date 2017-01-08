@@ -24,6 +24,6 @@ before_script:
 - curl -# -L -o $(pwd)/rpmbuild/SOURCES/git-${VERSION}.tar.gz http://kernel.org/pub/software/scm/git/git-${VERSION}.tar.gz
 script:
 - test "${TRAVIS_BRANCH}" = "master" && RELEASE_VERSION="`date +%Y%m%d%H%M`.`git rev-parse --short ${TRAVIS_BRANCH}`" || RELEASE_VERSION=""
-- docker run --rm=true -v $(pwd):${WORKDIR}:rw -E "RELEASE_VERSION=${RELEASE_VERSION}" --env-file $(pwd)/.env rpm-git bash ${WORKDIR}/build.sh
+- docker run --rm=true -v $(pwd):${WORKDIR}:rw -e "RELEASE_VERSION=${RELEASE_VERSION}" --env-file $(pwd)/.env rpm-git bash ${WORKDIR}/build.sh
 - docker run --rm=true -v $(pwd):${WORKDIR}:rw centos:${OS_TYPE}${OS_VERSION} bash
   -c "find /source -name \"*.rpm\" -type f | xargs -I{} yum -y localinstall {}"
