@@ -23,7 +23,19 @@ before_script:
 - mkdir -p $(pwd)/rpmbuild/SOURCES
 - curl -# -L -o $(pwd)/rpmbuild/SOURCES/git-${VERSION}.tar.gz http://kernel.org/pub/software/scm/git/git-${VERSION}.tar.gz
 script:
-- test "${TRAVIS_BRANCH}" = "master" && RELEASE_VERSION="`date +%Y%m%d%H%M`.`git rev-parse --short ${TRAVIS_BRANCH}`" || RELEASE_VERSION=""
-- docker run --rm=true -v $(pwd):${WORKDIR}:rw -e "RELEASE_VERSION=${RELEASE_VERSION}" --env-file $(pwd)/.env rpm-git bash ${WORKDIR}/build.sh
+- test "${TRAVIS_BRANCH}" = "master" && RELEASE_VERSION="`date +%Y%m%d%H%M`.`git rev-parse
+  --short ${TRAVIS_BRANCH}`" || RELEASE_VERSION=""
+- docker run --rm=true -v $(pwd):${WORKDIR}:rw -e "RELEASE_VERSION=${RELEASE_VERSION}"
+  --env-file $(pwd)/.env rpm-git bash ${WORKDIR}/build.sh
 - docker run --rm=true -v $(pwd):${WORKDIR}:rw centos:${OS_TYPE}${OS_VERSION} bash
   -c "find /source -name \"*.rpm\" -type f | xargs -I{} yum -y localinstall {}"
+deploy:
+  provider: packagecloud
+  repository: centos
+  username: laksmana
+  token:
+    secure: U3El5NLT4nLLFsu5kHymZyTLQubd+Wa3ClVbRfVJBRbnaNeARsEr7AwLMikEimvh9Sbrptdz52SWXQ7Ov0hOXczas3SpV7TjRolsQ8sLQfhIPK833zm5ea8QeznH2xZt24AkOJxK17LVRZ9E4tvQcDdRWg28AZSuiful+nB02MCt6GObtdt1pXvsFgW/NIdslbyLLJqALPMnSRByXQN1hx3n9hYa3F3BYqVjuHuzzMDGuD94cop7FucKAOWhlQdUHLfKSfNIfE4h5Uu88nHFdPizfiZXhdER2AAl2JwurneTEWynbg5EHADtBRvkeRGm/5eW/S6/c6sGqTr9CTvIwPgPsL8WIGRanVvZA1kOltODUILF/KlSe39u0pKFAwXtPIaIr2ryuOlPXRtw9JiZjSlSICXiIGYAU43Ye8tl71CaaOwt8Vk0XGd9JGrEt5poiwk1IyK37vJ6em/W1/7PO5D5Eaw+jpZBbqsO05z2bGGOYmUjOpxd5khuMFv5LiSYR5QAPsFuWfXicdCbPimjfflPphzVuYHoiq4pdckTEekrM/LpkpBVE+rM4bLJ0SAHmv2M5MvLKTPQQUWE0FTpl/tOQkslav91F4k8b/WODw1jNpa0AhzXziOLXxCzWcxgqx8oLybpcZ5JyTeaxFRglIwtuSVSAATugRFZ+U2uuSc=
+  dist: el/6
+  package_glob: rpmbuild/RPMS/**/*.rpm
+  on:
+    branch: master
