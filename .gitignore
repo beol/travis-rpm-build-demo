@@ -1,2 +1,8 @@
+.gnupg/
 .vagrant/
 rpmbuild/
+
+.bash*
+.env
+rpm-signing.asc
+rpm-signing.tar
