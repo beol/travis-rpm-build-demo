@@ -1,0 +1,9 @@
+#!/usr/bin/expect -f
+
+set rpmfile [lindex $argv 0]
+spawn rpm --addsign $rpmfile
+expect -exact "Enter pass phrase:"
+send -- "$::env(GPG_PASSPHRASE)\r"
+expect eof
+
+

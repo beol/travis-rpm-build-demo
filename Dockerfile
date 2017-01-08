@@ -2,6 +2,7 @@ FROM centos:centos6
 
 RUN yum -y install \
            curl-devel \
+           expect \
            gcc \
            openssl-devel \
            perl-Error \
