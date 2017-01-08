@@ -8,7 +8,7 @@
 
 Name: 		%{packagename}
 Version: 	%{majorver}.%{minorver}.%{patchver}
-Release: 	0a%{?dist}
+Release: 	%(echo ${RELEASE_VERSION:-0a})%{?dist}
 Summary:  	Core git tools
 License: 	GPL
 Group: 		Development/Tools
