@@ -36,6 +36,5 @@ deploy:
   token:
     secure: U3El5NLT4nLLFsu5kHymZyTLQubd+Wa3ClVbRfVJBRbnaNeARsEr7AwLMikEimvh9Sbrptdz52SWXQ7Ov0hOXczas3SpV7TjRolsQ8sLQfhIPK833zm5ea8QeznH2xZt24AkOJxK17LVRZ9E4tvQcDdRWg28AZSuiful+nB02MCt6GObtdt1pXvsFgW/NIdslbyLLJqALPMnSRByXQN1hx3n9hYa3F3BYqVjuHuzzMDGuD94cop7FucKAOWhlQdUHLfKSfNIfE4h5Uu88nHFdPizfiZXhdER2AAl2JwurneTEWynbg5EHADtBRvkeRGm/5eW/S6/c6sGqTr9CTvIwPgPsL8WIGRanVvZA1kOltODUILF/KlSe39u0pKFAwXtPIaIr2ryuOlPXRtw9JiZjSlSICXiIGYAU43Ye8tl71CaaOwt8Vk0XGd9JGrEt5poiwk1IyK37vJ6em/W1/7PO5D5Eaw+jpZBbqsO05z2bGGOYmUjOpxd5khuMFv5LiSYR5QAPsFuWfXicdCbPimjfflPphzVuYHoiq4pdckTEekrM/LpkpBVE+rM4bLJ0SAHmv2M5MvLKTPQQUWE0FTpl/tOQkslav91F4k8b/WODw1jNpa0AhzXziOLXxCzWcxgqx8oLybpcZ5JyTeaxFRglIwtuSVSAATugRFZ+U2uuSc=
   dist: el/6
-  package_glob: rpmbuild/RPMS/**/*.rpm
-  on:
-    branch: master
+  package_glob: rpmbuild/RPMS/x86_64/*.rpm
+  skip_cleanup: true
