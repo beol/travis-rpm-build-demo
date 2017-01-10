@@ -9,18 +9,17 @@
 Name: 		%{packagename}
 Version: 	%{majorver}.%{minorver}.%{patchver}
 Release: 	%(echo ${RELEASE_VERSION:-0a})%{?dist}
-Summary:  	Core git tools
-License: 	GPL
+Summary:  	Fast Version Control System
+License: 	GPLv2
 Group: 		Development/Tools
-URL: 		http://kernel.org/pub/software/scm/git/
+URL: 		http://git-scm.com/
 Source: 	http://kernel.org/pub/software/scm/git/%{_name}-%{version}.tar.gz
 BuildRequires:	zlib-devel >= 1.2, openssl-devel, curl-devel
 BuildRoot:	%{_tmppath}/%{_name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:	zlib >= 1.2, rsync, less, openssh-clients
-Requires(post):	/usr/sbin/update-alternatives
-Requires(preun):	/usr/sbin/update-alternatives
 
+Provides:   git = %{version}-%{release}
 Provides:	git-core = %{version}-%{release}
 Obsoletes:	git-core <= 1.5.4.2
 
