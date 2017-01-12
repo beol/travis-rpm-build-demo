@@ -38,6 +38,8 @@ deploy:
   dist: el/6
   package_glob: rpmbuild/RPMS/x86_64/*.rpm
   skip_cleanup: true
+  on:
+    tags: true
 notifications:
   slack:
     rooms:
