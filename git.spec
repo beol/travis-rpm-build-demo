@@ -1,14 +1,11 @@
-# Pass --without docs to rpmbuild if you don't want the documentation
 %global _name   git
-%global majorver 2
-%global minorver 11
-%global patchver 0
-%global packagename %{_name}%{majorver}%{minorver}
+%global _ver %{?_version}%{!?_version:2.11.0}
+%global _xver %(echo %{_ver} | cut -d. -f1,2)
 %global _prefix /opt/%{name}
 
-Name: 		%{packagename}
-Version: 	%{majorver}.%{minorver}.%{patchver}
-Release: 	%(echo ${RELEASE_VERSION:-0a})%{?dist}
+Name: 		%{_name}%(echo %{_xver} | sed "s,\.,,")
+Version: 	%{_ver}
+Release: 	%{?_release}%{?_release:0a}%{?dist}
 Summary:  	Fast Version Control System
 License: 	GPLv2
 Group: 		Development/Tools
