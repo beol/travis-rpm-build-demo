@@ -1,6 +1,9 @@
 %_signature gpg
 %_gpg_path %(echo $HOME)/.gnupg
-%_gpg_name %(echo $GPG_KEY)
+%_gpg_name Leo Laksmana (RPM signing) <beol@laksmana.com>
 %_gpgbin /usr/bin/gpg
+
+%packager Leo Laksmana <beol@laksmana.com>
+%vendor Laksmana CentOS Repo
 
 %debug_package %{nil}
