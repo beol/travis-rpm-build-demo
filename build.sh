@@ -4,8 +4,10 @@ set -ev
 
 BASE_DIR=$(dirname $0)
 
-rpmbuild -bb ${BASE_DIR}/git.spec
+cd $BASE_DIR
 
-find ${BASE_DIR}/rpmbuild/RPMS -type f -name "*.rpm" | xargs -I{} expect ${BASE_DIR}/rpm-sign.exp {}
+spectool -g -R git.spec
+rpmbuild -bb git.spec
 
-find ${BASE_DIR}/rpmbuild/RPMS -type f -name "*.rpm" | xargs -I{} rpm --checksig {}
+[[ -n "${GPG_PASSPHRASE}" ]] && find ./rpmbuild/RPMS -type f -name "*.rpm" | \
+        xargs -I{} sh -c "./rpm-sign.exp {} && rpm --checksig {}"
