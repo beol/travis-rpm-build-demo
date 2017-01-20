@@ -5,7 +5,7 @@
 
 Name: 		%{_name}%(echo %{_xver} | sed "s,\.,,")
 Version: 	%{_ver}
-Release: 	%{?_release}%{?_release:0a}%{?dist}
+Release: 	%{?_release}%{!?_release:0a}%{?dist}
 Summary:  	Fast Version Control System
 License: 	GPLv2
 Group: 		Development/Tools
