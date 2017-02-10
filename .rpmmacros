@@ -1,3 +1,5 @@
+%_topdir /source/rpmbuild
+
 %_signature gpg
 %_gpg_path %(echo $HOME)/.gnupg
 %_gpg_name Leo Laksmana (RPM signing) <beol@laksmana.com>
